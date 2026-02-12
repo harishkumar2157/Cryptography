@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char matrix[5][5] = {
+    {'M','F','H','I','K'},
+    {'U','N','O','P','Q'},
+    {'Z','V','W','X','Y'},
+    {'E','L','A','R','G'},
+    {'D','S','T','B','C'}
+};
+
+void findPosition(char ch, int *row, int *col) {
+    if (ch == 'J') ch = 'I';
+    for(int i=0;i<5;i++)
+        for(int j=0;j<5;j++)
+            if(matrix[i][j]==ch){
+                *row=i;
+                *col=j;
+                return;
+            }
+}
+
+void prepareText(char text[], char prepared[]) {
+    int i, j=0;
+    for(i=0;text[i];i++) {
+        if(isalpha(text[i])) {
+            prepared[j++] = toupper(text[i]);
+        }
+    }
+    prepared[j] = '\0';
+
+    // Insert X between duplicate letters
+    for(i=0;i<strlen(prepared);i+=2) {
+        if(prepared[i]==prepared[i+1]) {
+            for(int k=strlen(prepared);k>i+1;k--)
+                prepared[k]=prepared[k-1];
+            prepared[i+1]='X';
+        }
+    }
+
+    // If odd length, add X
+    if(strlen(prepared)%2!=0)
+        strcat(prepared,"X");
+}
+
+int main() {
+    char text[200] = "Must see you over Cadogan West Coming at once";
+    char prepared[200];
+
+    prepareText(text, prepared);
+
+    printf("Prepared text: %s\n", prepared);
+    printf("Ciphertext: ");
+
+    for(int i=0; prepared[i]; i+=2) {
+        int r1,c1,r2,c2;
+        findPosition(prepared[i], &r1, &c1);
+        findPosition(prepared[i+1], &r2, &c2);
+
+        if(r1==r2) {
+            printf("%c%c", matrix[r1][(c1+1)%5], matrix[r2][(c2+1)%5]);
+        }
+        else if(c1==c2) {
+            printf("%c%c", matrix[(r1+1)%5][c1], matrix[(r2+1)%5][c2]);
+        }
+        else {
+            printf("%c%c", matrix[r1][c2], matrix[r2][c1]);
+        }
+    }
+
+    return 0;
+}
