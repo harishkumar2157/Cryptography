@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main() {
+    char cipher[] = "53‡‡†305))6*;4826)4‡.)4‡);806*;48†8¶60))85;;]8*;:‡*8†83";
+    
+    char map[256] = {0};
+
+    // Partial mapping based on frequency analysis
+    map['5']='A'; map['3']='G'; map['‡']='O'; map['†']='D';
+    map['0']='L'; map[')']='S'; map['6']='I'; map['*']='T';
+    map[';']='H'; map['4']='N'; map['8']='E'; map['¶']='R';
+    map[':']='F'; map[']']='B';
+
+    printf("Decrypted text:\n");
+    for(int i=0; cipher[i] != '\0'; i++) {
+        if(map[(int)cipher[i]] != 0)
+            printf("%c", map[(int)cipher[i]]);
+        else
+            printf("?");
+    }
+
+    return 0;
+}
